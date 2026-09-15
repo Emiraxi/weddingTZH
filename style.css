@@ -34,10 +34,8 @@
     }
 
     /* КАСТОМНЫЙ КУРСОР (только для ПК) */
-    @media (hover: hover) and (pointer: fine) {
-        * {
-            cursor: none;
-        }
+    @media (hover: hover) and (pointer: fine) 
+       
 
         .cursor {
             position: fixed;
