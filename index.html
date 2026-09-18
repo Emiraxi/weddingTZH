@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ky">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Тайырбек & Жылдыз — Чакыруу</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+
+    <audio id="weddingMusic" loop preload="auto">
+        <source src="music/wedding.mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="musicButton" class="music-button" onclick="toggleMusic()" aria-label="Музыканы башкаруу"><span
+            class="music-icon">♪</span><span class="music-label">Жүрөктүн обону</span><span
+            class="music-waves"><i></i><i></i><i></i></span></button>
+
+    <div class="page-stars" id="pageStars"></div>
+
+    <!--  
+     КАСТОМНЫЙ КУРСОР (только ПК)
+  -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-dot" id="cursorDot"></div>
+
+    <!--  
+     ЭФФЕКТ РАЗБИТОГО СТЕКЛА
+  -->
+    <div class="glass-break" id="glassBreak"></div>
+
+    <!--  
+     ПАРЯЩИЕ ТЮЛЬПАНЫ
+  -->
+    <div id="tulips"></div>
+
+    <!--  
+     ОТКРЫТИЕ
+  -->
+    <div class="intro-screen" id="intro">
+        <div class="intro-content">
+            <div class="intro-small">Чакыруу</div>
+            <div class="intro-line"></div>
+            <div class="tunduk-intro">
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="beam"></div>
+                <div class="beam"></div>
+                <div class="beam"></div>
+                <div class="beam"></div>
+                <div class="beam"></div>
+                <div class="beam"></div>
+            </div>
+            <div class="intro-names">
+                Тайырбек
+                <span class="and">&</span>
+                Жылдыз
+            </div>
+            <button class="open-btn" onclick="openSite()">Чакыруу баракчасын ачуу</button>
+        </div>
+    </div>
+
+    <!--  
+     HERO
+  -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="stars" id="stars"></div>
+        <div class="snow" id="snowContainer"></div>
+        <div class="mountains" id="mountains">
+            <div class="mountain one"></div>
+            <div class="mountain two"></div>
+            <div class="mountain three"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-label">Биз жашообуздун жаңы барагын ачып жатабыз</div>
+            <div class="hero-names">
+                Тайырбек
+                <span class="and">&</span>
+                Жылдыз
+            </div>
+            <div class="hero-date">17 · 10 · 2026</div>
+        </div>
+        <div class="scroll-text">Төмөн карай жылдырыңыз</div>
+    </section>
+
+    <!--  
+     SHYRDYK
+  -->
+    <div class="shyrdak-strip">
+        <div class="hearts">
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+        </div>
+    </div>
+
+    <!--  
+     WELCOME
+  -->
+    <section class="welcome reveal">
+        <div class="particle-container" id="welcomeParticles"></div>
+        <div class="welcome-inner">
+            <div class="label">Кымбаттуу туугандар жана достор</div>
+            <div class="title">Бул өзгөчө<br>күндү сиздер<br>менен бөлүшкүбүз келет</div>
+            <div class="welcome-text">
+                Айрым көз ирмемдерди эсибизде гана сактабастан,
+                жүрөгүбүзгө жакын адамдар менен бөлүшкүбүз келет.
+                <br><br>
+                Биз үй-бүлөлүк тарыхыбыздын жаңы барагын ачып жатабыз
+                жана бул күнү сиздердин жаныбызда болушуңуздарды каалайбыз.
+            </div>
+            <div class="signature">Сүйүү менен, Тайырбек & Жылдыз</div>
+        </div>
+    </section>
+
+    <!--  
+     STORY
+  -->
+    <section class="story">
+        <div class="story-grid">
+            <div class="photo-frame reveal">
+                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=90"
+                    alt="Фото пары">
+            </div>
+            <div class="story-text reveal">
+                <div class="label">Биздин тарыхыбыз</div>
+                <div class="title">Эки жол.<br>Бир тагдыр.</div>
+                <p>Бир кезде ар бирибиздин өз жолубуз, өз кыялдарыбыз, пландарыбыз бар эле.</p>
+                <p>Андан кийин жолдорубуз кесилишти. Ошондо мындан ары бирге басууну каалаарыбызды түшүндүк.</p>
+                <p>Эми эң сонун нерсе — биздин жалпы тарыхыбыз башталууда.</p>
+            </div>
+        </div>
+    </section>
+
+    <!--  
+     TUNDUK 3D
+  -->
+    <section class="tunduk-section reveal">
+        <div class="label">Үйүбүздүн символу</div>
+        <div class="title">Бир түндүктүн<br>алдында</div>
+
+        <div class="big-tunduk" id="tunduk3d">
+            <div class="ring r1"></div>
+            <div class="ring r2"></div>
+            <div class="ring r3"></div>
+            <div class="ring r4"></div>
+            <div class="ring r5"></div>
+            <div class="beam b1"></div>
+            <div class="beam b2"></div>
+            <div class="beam b3"></div>
+            <div class="beam b4"></div>
+            <div class="beam b5"></div>
+            <div class="beam b6"></div>
+            <div class="tunduk-center">T & J</div>
+        </div>
+
+        <div class="tunduk-description">
+            Түндүк — бул жөн гана боз үйдүн бир бөлүгү эмес.
+            Ал үйдүн, биримдиктин жана үй-бүлөнүн символу.
+            <br><br>
+            Бул күнү биз өзүбүздүн түндүгүбүздү көтөрүп,
+            бир үйдүн алдында, бир кыял жана бир жүрөк менен
+            жашообузду баштагыбыз келет.
+        </div>
+    </section>
+
+    <!--  
+     DATE + ЗОЛОТОЙ ДОЖДЬ
+  -->
+    <section class="date-section reveal">
+        <div class="gold-rain" id="goldRain"></div>
+        <div class="label">Бул датаны эсиңизде сактаңыз</div>
+        <div class="date-big">17.10.2026</div>
+        <div class="date-details">ишемби · Бишкек · 2026</div>
+    </section>
+
+    <!--  
+     COUNTDOWN
+  -->
+    <section class="countdown reveal">
+        <div class="label">Жолугушканга чейин</div>
+        <div class="title">Калды</div>
+        <div class="timer">
+            <div>
+                <div class="timer-number" id="days">00</div>
+                <div class="timer-label">күн</div>
+            </div>
+            <div>
+                <div class="timer-number" id="hours">00</div>
+                <div class="timer-label">саат</div>
+            </div>
+            <div>
+                <div class="timer-number" id="minutes">00</div>
+                <div class="timer-label">мүнөт</div>
+            </div>
+            <div>
+                <div class="timer-number" id="seconds">00</div>
+                <div class="timer-label">секунда</div>
+            </div>
+        </div>
+    </section>
+    <!--  
+     GALLERY
+  -->
+    <section class="gallery">
+        <div class="center reveal">
+            <div class="label">Биздин көз ирмемдер</div>
+            <div class="title">Тойдо<br>жолукканча</div>
+        </div>
+
+        <!-- 3: ВИДЕО — центр -->
+        <div class="gallery-item video-item reveal">
+            <video id="galleryVideo"
+                   autoplay
+                   muted
+                   loop
+                   playsinline
+                   webkit-playsinline
+                   preload="auto"
+                   disablepictureinpicture
+                   x-webkit-airplay="deny">
+                <source src="videos/2.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        </div>
+    </section>
+
+    <!--LOCATION -->
+    <section class="location reveal">
+        <div class="label">Жолугуша турган жер</div>
+        <div class="title">Тойубуз<br>кайда өтөт?</div>
+        <div class="location-card">
+            <h3>Сайран Ресторан</h3>
+            <p>Бишкек · Улица Курманжан датка, 657</p>
+
+        </div>
+    </section>
+
+    <!--
+ WEDDING CALENDAR
+
+
+-->
+    <section class="wedding-calendar-section reveal">
+        <div class="label">Биздин өзгөчө күн</div>
+        <div class="title">Той күнүбүз</div>
+
+
+        <div class="wow-calendar">
+            <div class="calendar-glow"></div>
+            <div class="calendar-top">
+                <span class="calendar-caption">SAVE THE DATE</span>
+                <span class="calendar-heart">♡</span>
+            </div>
+
+            <div class="calendar-month">
+                <button class="calendar-arrow" type="button" aria-label="Өткөн ай">‹</button>
+                <div>
+                    <div class="calendar-month-name">Октябрь</div>
+                    <div class="calendar-year">2026</div>
+                </div>
+                <button class="calendar-arrow" type="button" aria-label="Кийинки ай">›</button>
+            </div>
+
+            <div class="calendar-weekdays">
+                <span>Дш</span><span>Шш</span><span>Шр</span>
+                <span>Бш</span><span>Жм</span><span>Иш</span><span>Жк</span>
+            </div>
+
+            <div class="calendar-days" aria-label="Октябрь 2026 календары">
+                <span class="empty"></span><span class="empty"></span><span class="empty"></span>
+                <span>1</span><span>2</span><span>3</span><span>4</span>
+                <span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span>
+                <span>12</span><span>13</span><span>14</span><span>15</span><span>16</span>
+                <span class="wedding-day">17<i>🤍</i></span>
+                <span>18</span><span>19</span><span>20</span><span>21</span><span>22</span><span>23</span><span>24</span>
+                <span>25</span><span>26</span><span>27</span><span>28</span><span>29</span><span>30</span><span>31</span>
+            </div>
+
+            <div class="calendar-date-line">
+                <span>17</span>
+                <div>
+                    <strong>Октябрь 2026</strong>
+                    <small>Ишемби · саат 17:00</small>
+                </div>
+            </div>
+
+            <div class="calendar-sparkles">
+                <i>✦</i><i>✧</i><i>✦</i><i>✧</i><i>✦</i>
+            </div>
+        </div>
+
+        <div class="youth-format">
+            <span class="format-icon">✦</span>
+            <div>
+                <small>Кечебиздин форматы</small>
+                <strong>Жаштар форматында өтөт</strong>
+            </div>
+            <span class="format-icon">✦</span>
+        </div>
+    </section>
+
+    <!--  
+     RSVP
+  -->
+    <section class="rsvp reveal">
+        <div class="label">RSVP</div>
+        <div class="title">Биз менен бирге<br>болосузбу?</div>
+        <div class="rsvp-text">
+            Бул өзгөчө күнү кимдерди күтөрүбүздү билүү биз үчүн абдан маанилүү.
+            <br><br>
+            Сураныч, келериңизди ырастап коюңуз.
+        </div>
+        <form class="form" id="rsvpForm" onsubmit="sendForm(event)">
+            <input type="text" name="name" placeholder="Атыңыз" maxlength="100" autocomplete="name" required>
+            <select name="answer" required>
+                <option value="">Жообуңуз</option>
+                <option>Жалгыз келем</option>
+                <option>Жубайым менен келем</option>
+                <option>Тилекке каршы, бара албайм</option>
+            </select>
+            <input type="text" name="comment" placeholder="Каалоо же комментарий" maxlength="500">
+            <button type="submit">Жооп жөнөтүү</button>
+            <div class="form-status" id="formStatus" aria-live="polite"></div>
+        </form>
+    </section>
+
+    <!--  
+     FOOTER
+  -->
+    <footer>
+        <div class="candle">🕯️</div>
+        <div class="candle">🕯️</div>
+        <div class="candle">🕯️</div>
+        <div class="candle">🕯️</div>
+        <div class="candle">🕯️</div>
+        <div class="candle">🕯️</div>
+        <div class="candle">🕯️</div>
+        <div class="footer-names">Тайырбек & Жылдыз</div>
+        <div class="footer-phrase">Үйүбүз сүйүүгө толсун.</div>
+        <div class="footer-date">17 · 10 · 2026</div>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+
+</html>
