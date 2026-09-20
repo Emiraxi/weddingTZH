@@ -11,10 +11,13 @@
         href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600&display=swap"
         rel="stylesheet">
 
+
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+
 
     <audio id="weddingMusic" loop preload="auto">
         <source src="music/wedding.mp3" type="audio/mpeg">
@@ -26,14 +29,25 @@
 
     <div class="page-stars" id="pageStars"></div>
 
+    <!--  
+     КАСТОМНЫЙ КУРСОР (только ПК)
+  -->
     <div class="cursor" id="cursor"></div>
     <div class="cursor-dot" id="cursorDot"></div>
 
+    <!--  
+     ЭФФЕКТ РАЗБИТОГО СТЕКЛА
+  -->
     <div class="glass-break" id="glassBreak"></div>
 
+    <!--  
+     ПАРЯЩИЕ ТЮЛЬПАНЫ
+  -->
     <div id="tulips"></div>
 
-    <!-- ОТКРЫТИЕ -->
+    <!--  
+     ОТКРЫТИЕ
+  -->
     <div class="intro-screen" id="intro">
         <div class="intro-content">
             <div class="intro-small">Чакыруу</div>
@@ -55,11 +69,13 @@
                 <span class="and">&</span>
                 Жылдыз
             </div>
-            <button class="open-btn" id="openBtn" type="button">Чакыруу баракчасын ачуу</button>
+            <button class="open-btn" onclick="openSite()">Чакыруу баракчасын ачуу</button>
         </div>
     </div>
 
-    <!-- HERO -->
+    <!--  
+     HERO
+  -->
     <section class="hero">
         <div class="hero-bg"></div>
         <div class="stars" id="stars"></div>
@@ -81,16 +97,29 @@
         <div class="scroll-text">Төмөн карай жылдырыңыз</div>
     </section>
 
-    <!-- SHYRDYK -->
+    <!--  
+     SHYRDYK
+  -->
     <div class="shyrdak-strip">
         <div class="hearts">
-            <span>🤍</span><span>🤍</span><span>🤍</span><span>🤍</span>
-            <span>🤍</span><span>🤍</span><span>🤍</span><span>🤍</span>
-            <span>🤍</span><span>🤍</span><span>🤍</span><span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
+            <span>🤍</span>
         </div>
     </div>
 
-    <!-- WELCOME -->
+    <!--  
+     WELCOME
+  -->
     <section class="welcome reveal">
         <div class="particle-container" id="welcomeParticles"></div>
         <div class="welcome-inner">
@@ -107,7 +136,9 @@
         </div>
     </section>
 
-    <!-- STORY -->
+    <!--  
+     STORY
+  -->
     <section class="story">
         <div class="story-grid">
             <div class="photo-frame reveal">
@@ -124,7 +155,9 @@
         </div>
     </section>
 
-    <!-- TUNDUK 3D -->
+    <!--  
+     TUNDUK 3D
+  -->
     <section class="tunduk-section reveal">
         <div class="label">Үйүбүздүн символу</div>
         <div class="title">Бир түндүктүн<br>алдында</div>
@@ -154,7 +187,9 @@
         </div>
     </section>
 
-    <!-- DATE -->
+    <!--  
+     DATE + ЗОЛОТОЙ ДОЖДЬ
+  -->
     <section class="date-section reveal">
         <div class="gold-rain" id="goldRain"></div>
         <div class="label">Бул датаны эсиңизде сактаңыз</div>
@@ -162,7 +197,9 @@
         <div class="date-details">ишемби · Бишкек · 2026</div>
     </section>
 
-    <!-- COUNTDOWN -->
+    <!--  
+     COUNTDOWN
+  -->
     <section class="countdown reveal">
         <div class="label">Жолугушканга чейин</div>
         <div class="title">Калды</div>
@@ -185,14 +222,16 @@
             </div>
         </div>
     </section>
-
-    <!-- GALLERY -->
+    <!--  
+     GALLERY
+  -->
     <section class="gallery">
         <div class="center reveal">
             <div class="label">Биздин көз ирмемдер</div>
             <div class="title">Тойдо<br>жолукканча</div>
         </div>
 
+        <!-- 3: ВИДЕО — центр -->
         <div class="gallery-item video-item reveal">
             <video id="galleryVideo"
                    autoplay
@@ -200,27 +239,44 @@
                    loop
                    playsinline
                    webkit-playsinline
-                   preload="auto"
-                   x-webkit-airplay="deny">
+                   preload="metadata"
+                   disablepictureinpicture
+                   x-webkit-airplay="deny"
+                   aria-label="Видео с фотографиями пары">
                 <source src="videos/2.mp4" type="video/mp4">
             </video>
+            <button class="video-play-fallback" id="videoPlayFallback" type="button" aria-label="Включить видео">
+                <span>▶</span>
+                <small>Видео</small>
+            </button>
+            <div class="video-error-message" id="videoErrorMessage" hidden>
+                Видео не удалось загрузить
+            </div>
+        </div>
+
         </div>
     </section>
 
-    <!-- LOCATION -->
+    <!--LOCATION -->
     <section class="location reveal">
         <div class="label">Жолугуша турган жер</div>
         <div class="title">Тойубуз<br>кайда өтөт?</div>
         <div class="location-card">
             <h3>Сайран Ресторан</h3>
             <p>Бишкек · Улица Курманжан датка, 657</p>
+
         </div>
     </section>
 
-    <!-- WEDDING CALENDAR -->
+    <!--
+ WEDDING CALENDAR
+
+
+-->
     <section class="wedding-calendar-section reveal">
         <div class="label">Биздин өзгөчө күн</div>
         <div class="title">Той күнүбүз</div>
+
 
         <div class="wow-calendar">
             <div class="calendar-glow"></div>
@@ -276,7 +332,9 @@
         </div>
     </section>
 
-    <!-- RSVP -->
+    <!--  
+     RSVP
+  -->
     <section class="rsvp reveal">
         <div class="label">RSVP</div>
         <div class="title">Биз менен бирге<br>болосузбу?</div>
@@ -299,7 +357,9 @@
         </form>
     </section>
 
-    <!-- FOOTER -->
+    <!--  
+     FOOTER
+  -->
     <footer>
         <div class="candle">🕯️</div>
         <div class="candle">🕯️</div>
