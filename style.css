@@ -3817,3 +3817,180 @@ footer {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 }
+
+
+/* =========================================================
+   FINAL MOBILE / iPHONE FIXES
+   Эти правила стоят в самом конце, чтобы перекрыть старые
+   настройки и одинаково работать в Safari и Chrome.
+   ========================================================= */
+
+/* Тундүк: Safari корректно применяет 3D-трансформацию */
+.tunduk-section {
+    -webkit-perspective: 1200px !important;
+    perspective: 1200px !important;
+    overflow: hidden;
+}
+
+.big-tunduk {
+    width: min(350px, 78vw) !important;
+    height: min(350px, 78vw) !important;
+    margin: 55px auto !important;
+    -webkit-transform-style: preserve-3d !important;
+    transform-style: preserve-3d !important;
+    -webkit-backface-visibility: visible !important;
+    backface-visibility: visible !important;
+    touch-action: pan-y !important;
+    will-change: transform;
+}
+
+/* Не используем transition для самого түндүка:
+   Safari иногда "съедает" частые transform при гироскопе. */
+.big-tunduk {
+    transition: none !important;
+}
+
+.big-tunduk .ring,
+.big-tunduk .beam,
+.big-tunduk .tunduk-center {
+    -webkit-backface-visibility: visible !important;
+    backface-visibility: visible !important;
+}
+
+/* Видео всегда занимает реальное место и не исчезает в Safari */
+.gallery-item.video-item {
+    position: relative !important;
+    display: block !important;
+    overflow: hidden !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important;
+    contain: layout paint !important;
+    background: #eee0dc !important;
+}
+
+.gallery-item.video-item video {
+    position: relative !important;
+    z-index: 1 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    object-fit: cover !important;
+    -webkit-object-fit: cover !important;
+    background: #eee0dc !important;
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important;
+}
+
+/* Убираем декоративную кнопку поверх видео, если само видео играет.
+   JS добавит .is-playing. */
+.gallery-item.video-item::before {
+    z-index: 3 !important;
+    pointer-events: none !important;
+}
+
+.gallery-item.video-item::after {
+    z-index: 4 !important;
+    pointer-events: none !important;
+}
+
+.video-play-fallback {
+    position: absolute;
+    z-index: 5;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 76px;
+    height: 76px;
+    border: 1px solid rgba(255,255,255,.9);
+    border-radius: 50%;
+    background: rgba(64,59,61,.42);
+    color: #fff;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 3px;
+    font: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.video-play-fallback span {
+    font-size: 22px;
+    line-height: 1;
+}
+
+.video-play-fallback small {
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.video-play-fallback.visible {
+    display: flex;
+}
+
+.video-error-message {
+    position: absolute;
+    z-index: 6;
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
+    padding: 12px 14px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 12px;
+    color: #403b3d;
+    background: rgba(255,255,255,.9);
+}
+
+@media (max-width: 700px) {
+    .big-tunduk {
+        width: min(300px, 76vw) !important;
+        height: min(300px, 76vw) !important;
+        margin: 42px auto !important;
+    }
+
+    .tunduk-center {
+        font-size: 27px !important;
+    }
+
+    .gallery-item.video-item {
+        width: min(88vw, 420px) !important;
+        height: min(620px, 145vw) !important;
+        min-height: 500px !important;
+        margin: 44px auto 0 !important;
+    }
+
+    .gallery-item.video-item video {
+        object-position: center center !important;
+    }
+}
+
+@media (max-width: 400px) {
+    .gallery-item.video-item {
+        width: 88vw !important;
+        height: 560px !important;
+        min-height: 0 !important;
+    }
+
+    .big-tunduk {
+        width: 260px !important;
+        height: 260px !important;
+    }
+}
+
+/* iPhone in landscape */
+@media (max-height: 500px) and (orientation: landscape) {
+    .gallery-item.video-item {
+        height: 82vh !important;
+        min-height: 300px !important;
+    }
+}
