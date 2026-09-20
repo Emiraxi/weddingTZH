@@ -531,7 +531,7 @@ async function sendForm(event) {
 
     try {
         const response = await fetch(
-            'https://script.google.com/macros/s/AKfycbxdr8MiQIrKeze2TLlAgzPsP5UDvfLO-DkaAWZ5kfYIZ6setDl3arLSApOh_vIx8CzXHA/exec',
+            'https://script.google.com/macros/s/AKfycbxdS_EAeehh7ddXxRltMvOcDDvxi45WuU-9RVOlsNvh1-J_F5CuabGZk8l-IxaNk2yhRQ/exec',
             {
                 method: 'POST',
                 headers: {
