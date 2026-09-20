@@ -47,11 +47,19 @@ function openSite() {
         glass.appendChild(shard);
     }
 
-    // iOS: запускаем видео сразу после user-gesture (кнопка «открыть»)
+    // iOS: запуск видео непосредственно из user gesture.
     const galleryVideo = document.getElementById('galleryVideo');
     if (galleryVideo) {
         galleryVideo.muted = true;
-        galleryVideo.play().catch(() => {});
+        galleryVideo.defaultMuted = true;
+        galleryVideo.setAttribute('muted', '');
+        galleryVideo.setAttribute('playsinline', '');
+        galleryVideo.setAttribute('webkit-playsinline', '');
+
+        const playPromise = galleryVideo.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(() => {});
+        }
     }
 
     setTimeout(() => {
@@ -136,90 +144,154 @@ window.addEventListener('scroll', function () {
     mountains.style.transform = 'translateY(' + scrolled * 0.15 + 'px)';
 });
 
-/* 3D ТҮНДҮК - МЫШЬ, ГИРОСКОП (iOS/Android) + touch fallback */
+/* =========================================================
+   3D ТҮНДҮК — ПК + iPHONE/ANDROID ГИРОСКОП
+   ========================================================= */
 const tunduk = document.getElementById('tunduk3d');
+
+let orientationStarted = false;
+let orientationPermissionGranted = false;
+let orientationBaseBeta = null;
+let orientationBaseGamma = null;
+
+function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+}
 
 function setTundukTransform(rotateY, rotateX) {
     if (!tunduk) return;
-    const y = Math.max(-18, Math.min(18, rotateY));
-    const x = Math.max(-18, Math.min(18, rotateX));
-    tunduk.style.transform =
-        `perspective(1000px) rotateY(${y}deg) rotateX(${x}deg)`;
-    tunduk.style.webkitTransform =
-        `perspective(1000px) rotateY(${y}deg) rotateX(${x}deg)`;
+
+    const y = clamp(Number(rotateY) || 0, -18, 18);
+    const x = clamp(Number(rotateX) || 0, -18, 18);
+
+    const transform =
+        `perspective(1200px) rotateY(${y}deg) rotateX(${x}deg)`;
+
+    tunduk.style.transform = transform;
+    tunduk.style.webkitTransform = transform;
 }
 
-// Для мыши (только ПК)
+/* ПК — движение мыши */
 if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
     document.addEventListener('mousemove', (e) => {
         if (!tunduk) return;
+
         const rect = tunduk.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
-        const deltaX = (e.clientX - centerX) / 30;
-        const deltaY = (e.clientY - centerY) / 30;
-        setTundukTransform(deltaX, -deltaY);
+
+        const rotateY = (e.clientX - centerX) / 28;
+        const rotateX = -(e.clientY - centerY) / 28;
+
+        setTundukTransform(rotateY, rotateX);
     });
 }
 
-// Для телефона (гироскоп)
+/* Телефон — гироскоп.
+   Вместо фиксированного beta=45° калибруем исходное положение.
+   Поэтому түндүк не "залипает" сразу в один край на iPhone. */
 function handleOrientation(event) {
     if (!tunduk) return;
 
-    const beta = Number.isFinite(event.beta) ? event.beta : 0;
-    const gamma = Number.isFinite(event.gamma) ? event.gamma : 0;
+    const beta = Number(event.beta);
+    const gamma = Number(event.gamma);
 
-    // beta: -180..180 (передний/задний наклон), gamma: -90..90 (лево/право)
-    // Нормализуем относительно «вертикального» положения телефона
-    const tiltX = Math.max(-14, Math.min(14, (beta - 45) / 3.5));
-    const tiltY = Math.max(-14, Math.min(14, gamma / 3.5));
+    if (!Number.isFinite(beta) || !Number.isFinite(gamma)) return;
 
-    setTundukTransform(tiltY, -tiltX);
+    if (orientationBaseBeta === null) orientationBaseBeta = beta;
+    if (orientationBaseGamma === null) orientationBaseGamma = gamma;
+
+    const betaDelta = beta - orientationBaseBeta;
+    const gammaDelta = gamma - orientationBaseGamma;
+
+    const rotateX = clamp(-betaDelta * 0.45, -18, 18);
+    const rotateY = clamp(gammaDelta * 0.45, -18, 18);
+
+    setTundukTransform(rotateY, rotateX);
 }
 
-let orientationStarted = false;
+/* Если пользователь начал двигать телефон до первого события,
+   калибровку можно сбросить повторным открытием страницы. */
+function resetOrientationCalibration() {
+    orientationBaseBeta = null;
+    orientationBaseGamma = null;
+}
 
-function startDeviceOrientation() {
-    if (orientationStarted) return;
-    if (!tunduk) return;
+/* iOS: requestPermission() ОБЯЗАТЕЛЬНО запускаем из user gesture */
+async function startDeviceOrientation() {
+    if (orientationStarted || !tunduk) return;
 
     orientationStarted = true;
 
-    // Touch / pointer fallback — работает на любом телефоне (в т.ч. если гироскоп запрещён)
+    /* Touch fallback: если гироскоп запрещён, түндүк всё равно
+       можно вращать пальцем. */
     let touchActive = false;
-    tunduk.addEventListener('touchstart', () => { touchActive = true; }, { passive: true });
-    tunduk.addEventListener('touchend', () => { touchActive = false; }, { passive: true });
-    tunduk.addEventListener('touchcancel', () => { touchActive = false; }, { passive: true });
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchRotateY = 0;
+    let touchRotateX = 0;
+
+    tunduk.addEventListener('touchstart', (e) => {
+        if (!e.touches[0]) return;
+
+        touchActive = true;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchRotateY = 0;
+        touchRotateX = 0;
+    }, { passive: true });
 
     tunduk.addEventListener('touchmove', (e) => {
         if (!touchActive || !e.touches[0]) return;
-        const rect = tunduk.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const t = e.touches[0];
-        const deltaX = (t.clientX - centerX) / 18;
-        const deltaY = (t.clientY - centerY) / 18;
-        setTundukTransform(deltaX, -deltaY);
+
+        const touch = e.touches[0];
+
+        const dx = touch.clientX - touchStartX;
+        const dy = touch.clientY - touchStartY;
+
+        touchRotateY = clamp(dx / 8, -18, 18);
+        touchRotateX = clamp(-dy / 8, -18, 18);
+
+        setTundukTransform(touchRotateY, touchRotateX);
     }, { passive: true });
 
-    // iOS 13+ требует явного разрешения из user-gesture
-    if (
-        typeof DeviceOrientationEvent !== 'undefined' &&
-        typeof DeviceOrientationEvent.requestPermission === 'function'
-    ) {
-        DeviceOrientationEvent.requestPermission()
-            .then((permission) => {
-                if (permission === 'granted') {
-                    window.addEventListener('deviceorientation', handleOrientation, true);
-                }
-                // даже если отказали — touch fallback уже работает
-            })
-            .catch(() => {
-                // touch fallback остаётся
-            });
-    } else if (typeof DeviceOrientationEvent !== 'undefined') {
-        // Android и другие браузеры без prompt
-        window.addEventListener('deviceorientation', handleOrientation, true);
+    const stopTouch = () => {
+        touchActive = false;
+    };
+
+    tunduk.addEventListener('touchend', stopTouch, { passive: true });
+    tunduk.addEventListener('touchcancel', stopTouch, { passive: true });
+
+    if (typeof DeviceOrientationEvent === 'undefined') {
+        return;
+    }
+
+    try {
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+            const permission = await DeviceOrientationEvent.requestPermission();
+
+            if (permission === 'granted') {
+                orientationPermissionGranted = true;
+                resetOrientationCalibration();
+                window.addEventListener(
+                    'deviceorientation',
+                    handleOrientation,
+                    true
+                );
+            }
+        } else {
+            /* Android / браузеры без отдельного permission prompt */
+            orientationPermissionGranted = true;
+            resetOrientationCalibration();
+            window.addEventListener(
+                'deviceorientation',
+                handleOrientation,
+                true
+            );
+        }
+    } catch (error) {
+        console.warn('Device orientation permission:', error);
+        /* Touch fallback остаётся активным. */
     }
 }
 
@@ -308,63 +380,135 @@ document.querySelectorAll('.reveal').forEach(element => {
     observer.observe(element);
 });
 
-/* ВИДЕО — iOS / Android autoplay fix */
+/* =========================================================
+   ВИДЕО — iPhone / iOS Safari / Android
+   ========================================================= */
 (function initGalleryVideo() {
     const video = document.getElementById('galleryVideo');
+    const fallback = document.getElementById('videoPlayFallback');
+    const errorMessage = document.getElementById('videoErrorMessage');
+
     if (!video) return;
 
-    // Гарантируем muted (iOS требует для autoplay)
     video.muted = true;
+    video.defaultMuted = true;
+
     video.setAttribute('muted', '');
     video.setAttribute('playsinline', '');
     video.setAttribute('webkit-playsinline', '');
+    video.setAttribute('preload', 'metadata');
 
-    function tryPlay() {
-        const p = video.play();
-        if (p && typeof p.then === 'function') {
-            p.catch(() => {
-                // Autoplay blocked — попробуем ещё раз при следующем жесте
-            });
+    function showFallback(show) {
+        if (!fallback) return;
+        fallback.classList.toggle('visible', show);
+    }
+
+    function hideError() {
+        if (errorMessage) errorMessage.hidden = true;
+    }
+
+    function showError() {
+        if (errorMessage) errorMessage.hidden = false;
+        showFallback(false);
+    }
+
+    async function tryPlayVideo() {
+        hideError();
+
+        try {
+            video.muted = true;
+            video.defaultMuted = true;
+
+            const promise = video.play();
+
+            if (promise && typeof promise.then === 'function') {
+                await promise;
+            }
+
+            showFallback(false);
+            video.classList.add('is-playing');
+        } catch (error) {
+            /* На iPhone autoplay может быть запрещён настройками Safari.
+               Само видео остаётся видимым; пользователь может нажать play. */
+            showFallback(true);
+            console.info('Autoplay video blocked:', error);
         }
     }
 
-    // После открытия сайта (user gesture уже был)
-    const originalOpen = window.openSite;
-    if (typeof originalOpen === 'function') {
-        // openSite уже определён выше, просто вызовем play после него
+    /* Нажатие на нашу кнопку — настоящий user gesture для iOS */
+    if (fallback) {
+        fallback.addEventListener('click', async () => {
+            hideError();
+
+            try {
+                video.muted = true;
+                await video.play();
+                showFallback(false);
+                video.classList.add('is-playing');
+            } catch (error) {
+                showError();
+            }
+        });
     }
 
-    // Играем, когда видео попадает в зону видимости
-    const videoObserver = new IntersectionObserver(
-        (entries) => {
+    /* Когда Safari реально загрузил первый кадр — пробуем ещё раз. */
+    video.addEventListener('loadedmetadata', () => {
+        tryPlayVideo();
+    });
+
+    video.addEventListener('loadeddata', () => {
+        tryPlayVideo();
+    });
+
+    video.addEventListener('canplay', () => {
+        tryPlayVideo();
+    });
+
+    video.addEventListener('playing', () => {
+        showFallback(false);
+        hideError();
+    });
+
+    video.addEventListener('pause', () => {
+        /* Не показываем кнопку при временной паузе во время загрузки. */
+        if (!video.ended) showFallback(true);
+    });
+
+    video.addEventListener('error', () => {
+        console.error('Gallery video error:', video.error);
+        showError();
+    });
+
+    /* После нажатия "Открыть приглашение" */
+    document.addEventListener('click', () => {
+        if (!video.ended && video.paused) {
+            tryPlayVideo();
+        }
+    }, { passive: true });
+
+    document.addEventListener('touchend', () => {
+        if (!video.ended && video.paused) {
+            tryPlayVideo();
+        }
+    }, { passive: true });
+
+    /* Когда видео входит в экран */
+    if ('IntersectionObserver' in window) {
+        const videoObserver = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    tryPlay();
-                } else {
-                    // на мобильных можно ставить на паузу, чтобы экономить батарею
-                    // video.pause();
+                    tryPlayVideo();
                 }
             });
-        },
-        { threshold: 0.25 }
-    );
-    videoObserver.observe(video);
+        }, {
+            threshold: 0.1
+        });
 
-    // Дополнительный play при любом касании/клике (на случай жёсткой политики iOS)
-    const unlock = () => {
-        tryPlay();
-        document.removeEventListener('touchstart', unlock);
-        document.removeEventListener('click', unlock);
-    };
-    document.addEventListener('touchstart', unlock, { once: true, passive: true });
-    document.addEventListener('click', unlock, { once: true });
-
-    // На случай, если видео уже в DOM
-    if (document.readyState === 'complete') {
-        tryPlay();
-    } else {
-        window.addEventListener('load', tryPlay);
+        videoObserver.observe(video);
     }
+
+    /* Первый запуск */
+    tryPlayVideo();
 })();
 
 /* RSVP — Telegram аркылуу жөнөтөт */
