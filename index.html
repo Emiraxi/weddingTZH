@@ -233,18 +233,18 @@
 
         <!-- 3: ВИДЕО — центр -->
         <div class="gallery-item video-item reveal">
-           <video id="galleryVideo"
-       autoplay
-       muted
-       loop
-       playsinline
-       webkit-playsinline
-       preload="auto"
-       disablepictureinpicture
-       controlslist="nodownload nofullscreen noremoteplayback"
-       x-webkit-airplay="deny">
-    <source src="videos/2.mp4" type="video/mp4">
-</video>
+            <video id="galleryVideo"
+                   autoplay
+                   muted
+                   loop
+                   playsinline
+                   webkit-playsinline
+                   preload="metadata"
+                   disablepictureinpicture
+                   x-webkit-airplay="deny"
+                   aria-label="Видео с фотографиями пары">
+                <source src="videos/2.mp4" type="video/mp4">
+            </video>
             <button class="video-play-fallback" id="videoPlayFallback" type="button" aria-label="Включить видео">
                 <span>▶</span>
                 <small>Видео</small>
